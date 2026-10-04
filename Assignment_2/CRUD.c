@@ -9,6 +9,32 @@ struct User
     int age;
 };
 
+int idExists(int id)
+{
+    FILE *file;
+    struct User user;
+
+    file = fopen("users.txt", "r");
+
+    if (file == NULL)
+    {
+        return 0;
+    }
+
+    while (fscanf(file, "%d %49s %d",
+                  &user.id, user.name, &user.age) == 3)
+    {
+        if (user.id == id)
+        {
+            fclose(file);
+            return 1;
+        }
+    }
+
+    fclose(file);
+    return 0;
+}
+
 void createUser()
 {
     FILE *file;
@@ -23,8 +49,15 @@ void createUser()
     printf("Enter User ID: ");
     scanf("%d", &user.id);
 
+    if (idExists(user.id))
+    {
+        printf("User ID already exists.\n");
+        fclose(file);
+        return;
+    }
+
     printf("Enter User Name: ");
-    scanf("%s", user.name);
+    scanf("%49s", user.name);
 
     printf("Enter User Age: ");
     scanf("%d", &user.age);
@@ -47,7 +80,7 @@ void readUsers()
     }
 
     printf("\n---- User Records ----\n");
-    while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) == 3)
+    while (fscanf(file, "%d %49s %d", &user.id, user.name, &user.age) == 3)
     {
         printf("ID: %d | Name: %s | Age: %d\n", user.id, user.name, user.age);
     }
@@ -59,8 +92,8 @@ void updateUser()
     FILE *file, *temp;
     struct User user;
     int id, found = 0;
+
     file = fopen("users.txt", "r");
-    temp = fopen("temp.txt", "w");
 
     if (file == NULL)
     {
@@ -68,25 +101,40 @@ void updateUser()
         return;
     }
 
+    temp = fopen("temp.txt", "w");
+
+    if (temp == NULL)
+    {
+        printf("Temporary file could not be created.\n");
+        fclose(file);
+        return;
+    }
+
     printf("Enter ID to update: ");
     scanf("%d", &id);
 
-    while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) != 3)
+    while (fscanf(file, "%d %49s %d", &user.id, user.name, &user.age) == 3)
     {
         if (user.id == id)
         {
             found = 1;
+
             printf("Enter new name: ");
-            scanf("%s", user.name);
+            scanf("%49s", user.name);
+
             printf("Enter new age: ");
             scanf("%d", &user.age);
         }
+
         fprintf(temp, "%d %s %d\n", user.id, user.name, user.age);
     }
+
     fclose(file);
     fclose(temp);
+
     remove("users.txt");
     rename("temp.txt", "users.txt");
+
     if (found)
     {
         printf("User updated successfully.\n");
@@ -102,8 +150,8 @@ void deleteUser()
     FILE *file, *temp;
     struct User user;
     int id, found = 0;
+
     file = fopen("users.txt", "r");
-    temp = fopen("temp.txt", "w");
 
     if (file == NULL)
     {
@@ -111,10 +159,19 @@ void deleteUser()
         return;
     }
 
+    temp = fopen("temp.txt", "w");
+
+    if (temp == NULL)
+    {
+        printf("Temporary file could not be created.\n");
+        fclose(file);
+        return;
+    }
+
     printf("Enter ID to delete: ");
     scanf("%d", &id);
 
-    while (fscanf(file, "%d %s %d", &user.id, user.name, &user.age) != 3)
+    while (fscanf(file, "%d %49s %d", &user.id, user.name, &user.age) == 3)
     {
         if (user.id == id)
         {
@@ -124,10 +181,13 @@ void deleteUser()
 
         fprintf(temp, "%d %s %d\n", user.id, user.name, user.age);
     }
+
     fclose(file);
     fclose(temp);
+
     remove("users.txt");
     rename("temp.txt", "users.txt");
+
     if (found)
     {
         printf("User deleted successfully.\n");
