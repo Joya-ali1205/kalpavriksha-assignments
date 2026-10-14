@@ -90,8 +90,20 @@ int main(){
         scanf("%d",&student[i].rollno);
         scanf("%49s",student[i].name);
         scanf("%d",&student[i].marks[0]);
+        if(student[i].marks[0]<0 || student[i].marks[0]>100){
+            printf("Marks should be in 0 to 100 range.");
+            return 1;
+        }
         scanf("%d",&student[i].marks[1]);
+        if(student[i].marks[1]<0 || student[i].marks[1]>100){
+            printf("Marks should be in 0 to 100 range.");
+            return 1;
+        }
         scanf("%d",&student[i].marks[2]);
+        if(student[i].marks[2]<0 || student[i].marks[2]>100){
+            printf("Marks should be in 0 to 100 range.");
+            return 1;
+        }
         i++;
     }
     readStudents(student, 0, n);
