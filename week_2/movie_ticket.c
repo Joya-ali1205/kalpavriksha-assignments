@@ -45,9 +45,7 @@ float discount(int total_tickets, float subtotal)
 int main()
 {
     struct Customer customer;
-    printf("Enter Customer's Name: ");
     scanf("%49s", customer.name);
-    printf("Enter number of tickets: ");
     scanf("%d", &customer.total_ticket);
     if (customer.total_ticket < 1 || customer.total_ticket > 20)
     {
